@@ -1,7 +1,8 @@
 #trigger: none # will disable CI build
 
-trigger:
-- master
+pr: # will trigger on PR
+  branches:
+    include: [ master ] # branch names which will trigger a build
 
 #  paths:
 #    include: [ /DatabaseForm ] # file paths which must match to trigger a build
