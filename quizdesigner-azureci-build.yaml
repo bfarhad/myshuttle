@@ -1,25 +1,34 @@
 #trigger: none # will disable CI build
 
-trigger:
-- master
+pr: # will trigger on PR
+  branches:
+    include: [ master ] # branch names which will trigger a build
 
 #  paths:
 #    include: [ /DatabaseForm ] # file paths which must match to trigger a build
     
 pool:
+
   name: Azure Pipelines
   vmImage: 'ubuntu-16.04'
-  demands: maven
+  demands: 
+  - maven
 
 #Your build pipeline references an undefined variable named ‘Parameters.mavenPOMFile’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 
 steps:
 - task: Maven@3
-  displayName: 'Maven pom.xml'
   inputs:
-    mavenPomFile: '$(Parameters.mavenPOMFile)'
-    codeCoverageToolOption: Cobertura
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    codeCoverageToolOption: 'Cobertura'
+    javaHomeOption: 'JDKVersion'
     jdkVersionOption: 1.8
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
